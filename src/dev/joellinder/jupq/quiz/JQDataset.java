@@ -5,29 +5,29 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class JQDataset {
-    private String name;
-    private ArrayList<String> records;
+    private String _name;
+    private ArrayList<String> _records;
 
     public JQDataset(String name) {
-        this.name = name;
+        this._name = name;
     }
 
     public ArrayList<String> getRecords() {
-        return records;
+        return _records;
     }
 
     public boolean isLoaded() {
-        return records != null;
+        return _records != null;
     }
 
     public boolean loadData() {
         try {
-            var fileReader = new FileReader(String.format("data/%s", name));
+            var fileReader = new FileReader(String.format("data/%s", _name));
             var dataReader = new BufferedReader(fileReader);
 
             String line = null;
             while (((line = dataReader.readLine()) != null)) {
-                
+
             }
 
             dataReader.close();
