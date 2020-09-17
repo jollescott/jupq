@@ -1,8 +1,8 @@
 package dev.joellinder.jupq.quiz;
 
 public class JQRecord {
-    private String[] _answers;
-    private String _image;
+    private String[] answers;
+    private String image;
 
     public JQRecord(String[] answers, String image) {
         this.setAnswers(answers);
@@ -10,18 +10,18 @@ public class JQRecord {
     }
 
     public String getImage() {
-		return _image;
+		return image;
 	}
 
 	public void setImage(String image) {
-		this._image = image;
+		this.image = image;
 	}
 
 	public String[] getAnswers() {
-        return _answers;
+        return answers;
     }
 
     public void setAnswers(String[] answers) {
-        this._answers = answers;
+        this.answers = answers;
     }
 }

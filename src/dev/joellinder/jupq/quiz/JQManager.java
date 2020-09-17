@@ -1,22 +1,45 @@
 package dev.joellinder.jupq.quiz;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class JQManager {
 
-    private String[] _datasetNames;
-    private JQDataset _dataset;
+    private String[] datasetNames;
+    private JQDataset dataset;
+    private JQState state;
+    private ArrayList<JQStateListener> stateListeners;
+
+    public JQManager() {
+        stateListeners = new ArrayList<JQStateListener>();
+    }
 
     public boolean init() {
         // Load datasets
         var dataDir = new File("data");
-        _datasetNames = dataDir.list();
+        datasetNames = dataDir.list();
 
         // Fail if no data is found
-        if (_datasetNames == null || _datasetNames.length <= 0)
+        if (datasetNames == null || datasetNames.length <= 0)
             return false;
 
         return true;
+    }
+
+    public JQState getState() {
+        return state;
+    }
+
+    public void setState(JQState _state) {
+        this.state = _state;
+
+        for (var listener : stateListeners) {
+            listener.stateChanged(_state);
+        }
+    }
+
+    public void addStateListener(JQStateListener listener) {
+        this.stateListeners.add(listener);
     }
 
     public boolean loadDataset(String name) {
@@ -25,17 +48,17 @@ public class JQManager {
         if (!dataset.loadData())
             return false;
 
-        _dataset = dataset;
+        this.dataset = dataset;
 
         return true;
     }
 
     public String[] getDatasetNames() {
-        return _datasetNames;
+        return datasetNames;
     }
 
     public JQDataset getDataset() {
-        return _dataset;
+        return dataset;
     }
 
     // Singleton pattern.

@@ -5,24 +5,24 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class JQDataset {
-    private String _name;
-    private ArrayList<String> _records;
+    private String name;
+    private ArrayList<String> records;
 
     public JQDataset(String name) {
-        this._name = name;
+        this.name = name;
     }
 
     public ArrayList<String> getRecords() {
-        return _records;
+        return records;
     }
 
     public boolean isLoaded() {
-        return _records != null;
+        return records != null;
     }
 
     public boolean loadData() {
         try {
-            var fileReader = new FileReader(String.format("data/%s", _name));
+            var fileReader = new FileReader(String.format("data/%s", name));
             var dataReader = new BufferedReader(fileReader);
 
             String line = null;
