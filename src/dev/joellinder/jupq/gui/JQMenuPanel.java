@@ -1,6 +1,8 @@
 package dev.joellinder.jupq.gui;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -9,6 +11,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import dev.joellinder.jupq.quiz.JQManager;
+import dev.joellinder.jupq.quiz.JQState;
 
 public class JQMenuPanel extends JPanel {
 
@@ -29,6 +32,16 @@ public class JQMenuPanel extends JPanel {
 
         var startBtn = new JButton();
         startBtn.setText("Start round");
+        startBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                if (JQManager.getInstance().loadDataset((String) comboBox.getSelectedItem())) {
+                    JQManager.getInstance().setState(JQState.GAME);
+                } else {
+                    System.out.println(String.format("Could not load dataset: ", comboBox.getSelectedItem()));
+                }
+            }
+        });
         gamePanel.add(startBtn);
 
         box.add(Box.createVerticalGlue());
