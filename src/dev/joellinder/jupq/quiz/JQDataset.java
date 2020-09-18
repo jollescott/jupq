@@ -28,24 +28,21 @@ public class JQDataset {
             var fileReader = new FileReader(String.format("data/%s/items.txt", name));
             var dataReader = new BufferedReader(fileReader);
 
-            String line = null;
-            var itemCount = dataReader.lines().count();
+            String line;
+            int itemCount = 0;
 
-            while (((line = dataReader.readLine()) != null)) {
+            while ((line = dataReader.readLine()) != null) {
+                itemCount++;
+
                 var parts = line.split("-");
-
                 if (parts.length != 2) {
                     System.out.println("Format Error: missing \"-\"");
                     break;
                 }
 
                 var itemPart = parts[0];
-
-                if (itemPart.indexOf(",", 0) == -1) {
-                    break;
-                }
-
                 var names = itemPart.split(",");
+
                 var imageName = parts[1];
 
                 records.add(new JQRecord(names, imageName));
