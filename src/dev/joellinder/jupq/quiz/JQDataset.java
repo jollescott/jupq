@@ -62,4 +62,8 @@ public class JQDataset {
             return false;
         }
     }
+
+    public String getName() {
+        return name;
+    }
 }

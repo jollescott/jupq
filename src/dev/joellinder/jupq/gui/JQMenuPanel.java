@@ -3,6 +3,7 @@ package dev.joellinder.jupq.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,6 +17,8 @@ import dev.joellinder.jupq.quiz.JQState;
 public class JQMenuPanel extends JPanel {
 
     public JQMenuPanel() {
+        this.setLayout(new BorderLayout());
+
         var datasets = JQManager.getInstance().getDatasetNames();
 
         Box box = new Box(BoxLayout.Y_AXIS);
@@ -48,6 +51,6 @@ public class JQMenuPanel extends JPanel {
         box.add(gamePanel);
         box.add(Box.createVerticalGlue());
 
-        this.add(box);
+        this.add(box, BorderLayout.CENTER);
     }
 }

@@ -1,18 +1,25 @@
 package dev.joellinder.jupq.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
-public class JQGamePanel extends JPanel {
+import dev.joellinder.jupq.quiz.JQManager;
+import dev.joellinder.jupq.quiz.JQRecord;
+
+public class JQGamePanel extends JPanel implements ActionListener {
 
     class ImageView extends JPanel {
 
@@ -21,8 +28,9 @@ public class JQGamePanel extends JPanel {
         public void loadImage(String path) {
             try {
                 image = ImageIO.read(new File(path));
+                repaint();
             } catch (IOException ex) {
-                // TODO: Handle
+                System.out.println(ex.getMessage());
             }
         }
 
@@ -31,25 +39,82 @@ public class JQGamePanel extends JPanel {
             super.paintComponent(g);
 
             if (image != null) {
-                g.drawImage(image, 0, 0, this);
+                g.drawImage(image, (getWidth() - image.getWidth()) / 2, (getHeight() - image.getHeight()) / 2, this);
             }
         }
     }
 
     private ImageView image;
+    private ArrayList<JButton> buttons;
+    private ArrayList<JQRecord> questions;
+    private ArrayList<String> answerPool;
+    private String currentAnswer;
 
     public JQGamePanel() {
-        var resultPanel = new JPanel();
-        var imagePanel = new JPanel();
-        var buttonPanel = new JPanel();
+        setLayout(new BorderLayout());
 
         image = new ImageView();
-        imagePanel.add(image);
+        var buttonPanel = new JPanel();
 
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.setLayout(new GridLayout(0, 5));
+        buttons = new ArrayList<JButton>();
 
-        this.add(resultPanel, BorderLayout.NORTH);
-        this.add(imagePanel, BorderLayout.CENTER);
+        for (int i = 0; i < 5; i++) {
+            var button = new JButton(String.format("Button %d", i));
+            button.addActionListener(this);
+
+            buttonPanel.add(button, 0, i);
+            buttons.add(button);
+        }
+
+        this.add(image, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public void init() {
+        questions = JQManager.getInstance().getDataset().getRecords();
+        answerPool = new ArrayList<String>();
+
+        for (var q : questions) {
+            for (var a : q.getAnswers()) {
+                answerPool.add(a);
+            }
+        }
+
+        nextQuestion(questions.get(0));
+    }
+
+    private void nextQuestion(JQRecord question) {
+        var rand = new Random();
+        var alternatives = new ArrayList<String>();
+
+        var possibleAnswers = question.getAnswers();
+        var correctAnswer = possibleAnswers[rand.nextInt(possibleAnswers.length)];
+
+        currentAnswer = correctAnswer;
+        alternatives.add(correctAnswer);
+
+        while (alternatives.size() <= 5) {
+            var randomAnswer = answerPool.get(rand.nextInt(answerPool.size()));
+
+            if (alternatives.contains(randomAnswer)) {
+                alternatives.add(randomAnswer);
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            var button = buttons.get(i);
+            button.setText(alternatives.get(i));
+            button.setName(alternatives.get(i));
+        }
+
+        var datasetName = JQManager.getInstance().getDataset().getName();
+        image.loadImage(String.format("data/%s/images/%s", datasetName, question.getImage()));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        var correct = ((JButton) event.getSource()).getName() == currentAnswer;
+        System.out.println(correct);
     }
 }
