@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -31,7 +32,7 @@ public class JQGamePanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5539667735359900093L;
 	
 	private static final int ALTERNATIVE_COUNT = 3;
-    private static final int QUIZ_LENGTH = 2;
+    private static final int QUIZ_LENGTH = 10;
 
     class ImageView extends JPanel {
 
@@ -136,6 +137,8 @@ public class JQGamePanel extends JPanel implements ActionListener {
                 alternatives.add(randomAnswer);
             }
         }
+
+        Collections.shuffle(alternatives);
 
         for (int i = 0; i < ALTERNATIVE_COUNT; i++) {
             var button = buttons.get(i);
