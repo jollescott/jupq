@@ -20,15 +20,26 @@ import javax.swing.JPanel;
 
 import dev.joellinder.jupq.quiz.JQManager;
 import dev.joellinder.jupq.quiz.JQRecord;
+import dev.joellinder.jupq.quiz.JQResult;
+import dev.joellinder.jupq.quiz.JQState;
 
 public class JQGamePanel extends JPanel implements ActionListener {
 
-    private static final int ALTERNATIVE_COUNT = 3;
-    private static final int QUIZ_LENGTH = 10;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5539667735359900093L;
+	
+	private static final int ALTERNATIVE_COUNT = 3;
+    private static final int QUIZ_LENGTH = 2;
 
     class ImageView extends JPanel {
 
-        private BufferedImage image;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8551800646657047198L;
+		private BufferedImage image;
 
         public void loadImage(String path) {
             try {
@@ -54,6 +65,7 @@ public class JQGamePanel extends JPanel implements ActionListener {
     private ArrayList<JLabel> results;
     private ArrayList<JQRecord> questions;
     private ArrayList<String> answerPool;
+    private JQResult result;
     private String currentAnswer;
     private int index;
 
@@ -79,7 +91,7 @@ public class JQGamePanel extends JPanel implements ActionListener {
         results = new ArrayList<JLabel>();
 
         for (int i = 0; i < QUIZ_LENGTH; i++) {
-            var label = new JLabel(String.format("Q%s", i));
+            var label = new JLabel(String.format("Q%s", i + 1));
 
             resultPanel.add(label);
             results.add(label);
@@ -95,6 +107,7 @@ public class JQGamePanel extends JPanel implements ActionListener {
     public void init() {
         questions = JQManager.getInstance().getDataset().getRecords();
         answerPool = new ArrayList<String>();
+        result = new JQResult(QUIZ_LENGTH);
         index = 0;
 
         for (var q : questions) {
@@ -137,16 +150,19 @@ public class JQGamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         var button = (JButton) event.getSource();
-        var correct = button.getName() == currentAnswer;
+        var guess = button.getName();
+        var correct = guess == currentAnswer;
 
         var label = results.get(index);
-        label.setText(button.getName());
+        label.setText(guess);
         label.setForeground(correct ? Color.GREEN : Color.RED);
 
+        result.setAnswer(index, guess, currentAnswer);
         index++;
 
-        if (index > QUIZ_LENGTH) {
-            // TODO: End quiz
+        if (index >= QUIZ_LENGTH) {
+            JQManager.getInstance().setResult(result);
+            JQManager.getInstance().setState(JQState.RESULTS);
         } else {
             nextQuestion(questions.get(index));
         }

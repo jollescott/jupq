@@ -9,6 +9,7 @@ public class JQManager {
     private JQDataset dataset;
     private JQState state;
     private ArrayList<JQStateListener> stateListeners;
+    private JQResult result;
 
     public JQManager() {
         stateListeners = new ArrayList<JQStateListener>();
@@ -59,6 +60,14 @@ public class JQManager {
 
     public JQDataset getDataset() {
         return dataset;
+    }
+
+    public JQResult getResult() {
+        return result;
+    }
+
+    public void setResult(JQResult result) {
+        this.result = result;
     }
 
     // Singleton pattern.

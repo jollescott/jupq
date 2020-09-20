@@ -3,21 +3,24 @@ package dev.joellinder.jupq.gui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
 import java.awt.Component;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import dev.joellinder.jupq.quiz.JQManager;
 import dev.joellinder.jupq.quiz.JQState;
 
 public class JQMenuPanel extends JPanel {
 
-    public JQMenuPanel() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8605987874384654006L;
+
+	public JQMenuPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         var datasets = JQManager.getInstance().getDatasetNames();
