@@ -12,7 +12,6 @@ public class JQFrame extends JFrame {
 
     public JQFrame() {
         this.setTitle("Joel's Universal Picture Quiz");
-        this.setSize(800, 600);
 
         JQManager.getInstance().addStateListener(new JQStateListener() {
             @Override

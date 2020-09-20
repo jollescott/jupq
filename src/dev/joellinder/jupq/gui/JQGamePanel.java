@@ -1,6 +1,7 @@
 package dev.joellinder.jupq.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,12 +15,16 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import dev.joellinder.jupq.quiz.JQManager;
 import dev.joellinder.jupq.quiz.JQRecord;
 
 public class JQGamePanel extends JPanel implements ActionListener {
+
+    private static final int ALTERNATIVE_COUNT = 3;
+    private static final int QUIZ_LENGTH = 10;
 
     class ImageView extends JPanel {
 
@@ -46,20 +51,23 @@ public class JQGamePanel extends JPanel implements ActionListener {
 
     private ImageView image;
     private ArrayList<JButton> buttons;
+    private ArrayList<JLabel> results;
     private ArrayList<JQRecord> questions;
     private ArrayList<String> answerPool;
     private String currentAnswer;
+    private int index;
 
     public JQGamePanel() {
         setLayout(new BorderLayout());
 
         image = new ImageView();
         var buttonPanel = new JPanel();
+        var resultPanel = new JPanel();
 
-        buttonPanel.setLayout(new GridLayout(0, 5));
+        buttonPanel.setLayout(new GridLayout(0, ALTERNATIVE_COUNT));
         buttons = new ArrayList<JButton>();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < ALTERNATIVE_COUNT; i++) {
             var button = new JButton(String.format("Button %d", i));
             button.addActionListener(this);
 
@@ -67,13 +75,27 @@ public class JQGamePanel extends JPanel implements ActionListener {
             buttons.add(button);
         }
 
+        resultPanel.setLayout(new GridLayout(0, QUIZ_LENGTH));
+        results = new ArrayList<JLabel>();
+
+        for (int i = 0; i < QUIZ_LENGTH; i++) {
+            var label = new JLabel(String.format("Q%s", i));
+
+            resultPanel.add(label);
+            results.add(label);
+        }
+
+        this.add(resultPanel, BorderLayout.NORTH);
         this.add(image, BorderLayout.CENTER);
         this.add(buttonPanel, BorderLayout.SOUTH);
+
+        this.setPreferredSize(new Dimension(400, 300));
     }
 
     public void init() {
         questions = JQManager.getInstance().getDataset().getRecords();
         answerPool = new ArrayList<String>();
+        index = 0;
 
         for (var q : questions) {
             for (var a : q.getAnswers()) {
@@ -94,15 +116,15 @@ public class JQGamePanel extends JPanel implements ActionListener {
         currentAnswer = correctAnswer;
         alternatives.add(correctAnswer);
 
-        while (alternatives.size() <= 5) {
+        while (alternatives.size() < ALTERNATIVE_COUNT) {
             var randomAnswer = answerPool.get(rand.nextInt(answerPool.size()));
 
-            if (alternatives.contains(randomAnswer)) {
+            if (!alternatives.contains(randomAnswer)) {
                 alternatives.add(randomAnswer);
             }
         }
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < ALTERNATIVE_COUNT; i++) {
             var button = buttons.get(i);
             button.setText(alternatives.get(i));
             button.setName(alternatives.get(i));
@@ -114,7 +136,19 @@ public class JQGamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent event) {
-        var correct = ((JButton) event.getSource()).getName() == currentAnswer;
-        System.out.println(correct);
+        var button = (JButton) event.getSource();
+        var correct = button.getName() == currentAnswer;
+
+        var label = results.get(index);
+        label.setText(button.getName());
+        label.setForeground(correct ? Color.GREEN : Color.RED);
+
+        index++;
+
+        if (index > QUIZ_LENGTH) {
+            // TODO: End quiz
+        } else {
+            nextQuestion(questions.get(index));
+        }
     }
 }
