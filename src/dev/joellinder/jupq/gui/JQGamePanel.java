@@ -106,13 +106,19 @@ public class JQGamePanel extends JPanel implements ActionListener {
     }
 
     public void init() {
-        questions = JQManager.getInstance().getDataset().getRecords();
+        questions = new ArrayList<JQRecord>();
         answerPool = new ArrayList<String>();
         result = new JQResult(QUIZ_LENGTH);
         index = 0;
+        
+        var allQuestions = JQManager.getInstance().getDataset().getRecords();
+        Collections.shuffle(allQuestions);
 
-        for (var q : questions) {
-            for (var a : q.getAnswers()) {
+        for (int i = 0; i < QUIZ_LENGTH; i++) {
+        	var question = allQuestions.get(i);
+        	questions.add(question);
+        	
+            for (var a : question.getAnswers()) {
                 answerPool.add(a);
             }
         }

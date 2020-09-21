@@ -1,6 +1,7 @@
 package dev.joellinder.jupq.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -32,6 +33,7 @@ public class JQResultPanel extends JPanel {
 		this.add(Box.createVerticalGlue());
 
 		var proceedButton = new JButton("Proceed");
+		proceedButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		proceedButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
